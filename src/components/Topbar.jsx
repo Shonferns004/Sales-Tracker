@@ -18,11 +18,6 @@ export default function Topbar({
           <Menu className="h-4 w-4" />
         </button>
 
-        <div className="shrink-0">
-          <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-slate-400">{title}</p>
-          <p className="mt-1 text-sm font-medium text-slate-500">{subtitle}</p>
-        </div>
-
         <label className="relative min-w-0 flex-1">
           <Search className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
           <input
