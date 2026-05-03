@@ -11,6 +11,12 @@ import { parseCsvFile } from './utils/csv';
 import { useLeadNotifications } from './hooks/useLeadNotifications';
 
 export default function App() {
+  const notificationApiAvailable =
+    typeof window !== 'undefined' &&
+    window.isSecureContext &&
+    typeof Notification !== 'undefined' &&
+    typeof Notification.requestPermission === 'function';
+
   const [view, setView] = useState('dashboard');
   const [leads, setLeads] = useState([]);
   const [form, setForm] = useState(emptyForm);
@@ -24,7 +30,7 @@ export default function App() {
   const [followFilter, setFollowFilter] = useState(null);
   const [stageFilter, setStageFilter] = useState(null);
   const [priorityFilter, setPriorityFilter] = useState(null);
-  const [notificationsEnabled, setNotificationsEnabled] = useState(typeof Notification !== 'undefined' && Notification.permission === 'granted');
+  const [notificationsEnabled, setNotificationsEnabled] = useState(notificationApiAvailable && Notification.permission === 'granted');
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   useLeadNotifications(leads);
@@ -49,7 +55,10 @@ export default function App() {
   }, []);
 
   useEffect(() => {
-    if (typeof Notification === 'undefined') return;
+    if (!notificationApiAvailable) {
+      setNotificationsEnabled(false);
+      return;
+    }
     if (Notification.permission === 'granted') {
       setNotificationsEnabled(true);
       return;
@@ -59,15 +68,15 @@ export default function App() {
       return;
     }
 
-    Notification.requestPermission()
+    Promise.resolve(Notification.requestPermission())
       .then((permission) => {
         setNotificationsEnabled(permission === 'granted');
       })
       .catch((requestError) => {
-        console.error(requestError);
+        console.error('Notification permission request failed.', requestError);
         setNotificationsEnabled(false);
       });
-  }, []);
+  }, [notificationApiAvailable]);
 
   async function syncCsvSnapshot(sourceLeads) {
     const nextLeads = sourceLeads || (await listLeads());

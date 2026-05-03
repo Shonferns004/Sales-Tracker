@@ -3,7 +3,9 @@ import { today } from '../utils/date';
 
 export function useLeadNotifications(leads) {
   useEffect(() => {
+    if (typeof window === 'undefined') return undefined;
     if (typeof Notification === 'undefined') return undefined;
+    if (!window.isSecureContext) return undefined;
 
     const notifyDueLeads = () => {
       if (Notification.permission !== 'granted') return;
@@ -11,12 +13,16 @@ export function useLeadNotifications(leads) {
       leads.forEach((lead) => {
         if (lead.followUpDate !== today()) return;
         const key = `lead-reminder-${lead.id}-${lead.followUpDate}`;
-        if (localStorage.getItem(key)) return;
+        try {
+          if (localStorage.getItem(key)) return;
 
-        new Notification(`Follow-up due: ${lead.name}`, {
-          body: `${lead.phone} is scheduled for follow-up today.`,
-        });
-        localStorage.setItem(key, 'sent');
+          new Notification(`Follow-up due: ${lead.name || 'Lead'}`, {
+            body: `${lead.phone || 'No phone number'} is scheduled for follow-up today.`,
+          });
+          localStorage.setItem(key, 'sent');
+        } catch (error) {
+          console.error('Notification dispatch failed.', error);
+        }
       });
     };
 
