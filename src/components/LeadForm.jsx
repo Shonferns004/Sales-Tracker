@@ -160,22 +160,7 @@ export default function LeadForm({ title, subtitle, form, saving, onChange, onSu
           </div>
         </article>
 
-        <article className="rounded-2xl border border-slate-200 bg-white px-5 py-4 shadow-sm">
-          <div className="flex items-center justify-between gap-4">
-            <div className="flex items-center gap-3">
-              <div className="h-10 w-10 rounded-full bg-gradient-to-br from-slate-200 to-slate-400" />
-              <div>
-                <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-slate-400">Last Activity</p>
-                <h3 className="mt-1 text-sm font-semibold text-slate-900">Quantum Systems</h3>
-                <p className="text-sm text-blue-600">$12,500</p>
-              </div>
-            </div>
-            <button className="inline-flex items-center gap-2 text-sm font-semibold text-blue-600" type="button">
-              View Full Pipeline
-              <ArrowUpRight className="h-4 w-4" />
-            </button>
-          </div>
-        </article>
+    
       </section>
     </div>
   );
