@@ -40,11 +40,6 @@ export default function Sidebar({ activeView, onNavigate, notificationsEnabled, 
           </button>
         </div>
 
-        <div className="mb-6 rounded-[24px] bg-gradient-to-br from-slate-900 via-slate-800 to-slate-700 p-4 text-white shadow-lg shadow-slate-900/10">
-          <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-blue-200">Control Center</p>
-          <p className="mt-2 text-lg font-semibold">Keep the pipeline moving.</p>
-          <p className="mt-2 text-sm leading-6 text-slate-300">Dashboard, add, and import now share the same premium workspace styling.</p>
-        </div>
 
         <nav className="flex-1 space-y-2">
           {navItems.map((item) => {
@@ -74,26 +69,6 @@ export default function Sidebar({ activeView, onNavigate, notificationsEnabled, 
             );
           })}
         </nav>
-
-        <div className="mt-6 rounded-2xl border border-slate-200 bg-slate-50 p-4">
-          <div className="flex items-start gap-3">
-            <div className={`mt-0.5 inline-flex h-10 w-10 items-center justify-center rounded-xl ${notificationsEnabled ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'}`}>
-              <Bell className="h-4 w-4" />
-            </div>
-            <div>
-              <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400">Browser reminders</p>
-              <p className="mt-2 text-sm font-semibold text-slate-900">
-                {notificationsEnabled ? 'Notifications are active' : 'Notifications are unavailable or blocked'}
-              </p>
-              <p className="mt-2 text-sm leading-6 text-slate-500">Permission is requested automatically when the website loads.</p>
-            </div>
-          </div>
-        </div>
-
-        <div className="mt-6 space-y-2 border-t border-slate-200 pt-4 text-sm text-slate-500">
-          <div className="rounded-xl px-4 py-2">Support</div>
-          <div className="rounded-xl px-4 py-2">Logout</div>
-        </div>
       </aside>
     </>
   );
