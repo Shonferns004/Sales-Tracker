@@ -51,7 +51,6 @@ export default function LeadForm({ title, subtitle, form, saving, onChange, onSu
                     className="h-12 w-full rounded-xl border border-slate-200 bg-white px-4 text-sm text-slate-700 outline-none transition placeholder:text-slate-400 focus:border-blue-300"
                     onChange={(event) => onChange({ phone: event.target.value })}
                     placeholder="+1 (555) 000-0000"
-                    required
                     value={form.phone}
                   />
                 </label>

@@ -145,14 +145,8 @@ export default function App() {
     try {
       const rows = parsedRows || (await parseCsvFile(file));
       const result = await importLeads(rows);
-      if (!result.insertedCount) {
-        throw new Error('No rows were imported because the leads table requires a valid phone number.');
-      }
       const data = await loadLeads();
-      const summary =
-        result.skippedCount > 0
-          ? `${result.insertedCount} rows imported, ${result.skippedCount} skipped due to missing phone numbers.`
-          : `${result.insertedCount} rows imported.`;
+      const summary = `${result.insertedCount} rows imported.`;
 
       try {
         await syncCsvSnapshot(data);

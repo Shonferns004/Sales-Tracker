@@ -80,10 +80,6 @@ function toRow(input) {
   };
 }
 
-function canImportRow(row) {
-  return Boolean(row.phone);
-}
-
 export async function listLeads() {
   assertSupabaseConfig();
 
@@ -127,18 +123,11 @@ export async function importLeads(inputs) {
   assertSupabaseConfig();
 
   const preparedRows = inputs.map(toRow);
-  const validRows = preparedRows.filter(canImportRow);
-  const skippedCount = preparedRows.length - validRows.length;
-
-  if (!validRows.length) {
-    return { insertedCount: 0, skippedCount };
-  }
-
-  const { error } = await supabase.from('leads').insert(validRows);
+  const { error } = await supabase.from('leads').insert(preparedRows);
   if (error) throw error;
 
   return {
-    insertedCount: validRows.length,
-    skippedCount,
+    insertedCount: preparedRows.length,
+    skippedCount: 0,
   };
 }
