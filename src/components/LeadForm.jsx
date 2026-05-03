@@ -149,19 +149,6 @@ export default function LeadForm({ title, subtitle, form, saving, onChange, onSu
         </form>
       </section>
 
-      <section className="grid gap-4 md:grid-cols-[220px_minmax(0,1fr)]">
-        <article className="rounded-2xl border border-slate-200 bg-white px-5 py-4 shadow-sm">
-          <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-slate-400">Conversion Rate</p>
-          <div className="mt-3 flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-50 text-blue-600">
-              <TrendingUp className="h-4 w-4" />
-            </div>
-            <h3 className="text-2xl font-bold text-slate-900">24.8%</h3>
-          </div>
-        </article>
-
-    
-      </section>
     </div>
   );
 }
