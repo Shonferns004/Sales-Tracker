@@ -118,6 +118,26 @@ export default function LeadForm({ title, subtitle, form, saving, onChange, onSu
                   />
                 </label>
 
+                <label className="space-y-2">
+                  <span className="text-[11px] font-bold uppercase tracking-[0.18em] text-slate-400">Notes</span>
+                  <textarea
+                    className="min-h-[96px] w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-700 outline-none transition placeholder:text-slate-400 focus:border-blue-300"
+                    onChange={(event) => onChange({ note: event.target.value })}
+                    placeholder="Add follow-up notes..."
+                    value={form.note}
+                  />
+                </label>
+
+                <label className="flex items-center gap-3 rounded-xl border border-slate-200 bg-white px-4 py-3">
+                  <input
+                    checked={Boolean(form.isDone)}
+                    className="h-4 w-4 rounded border-slate-300 text-emerald-600 focus:ring-emerald-500"
+                    onChange={(event) => onChange({ isDone: event.target.checked })}
+                    type="checkbox"
+                  />
+                  <span className="text-sm font-medium text-slate-700">Mark follow-up as done</span>
+                </label>
+
                 <div className="rounded-2xl border border-blue-100 bg-white px-4 py-3 text-xs leading-6 text-slate-500">
                   High-priority leads trigger visible reminders in the pipeline.
                 </div>

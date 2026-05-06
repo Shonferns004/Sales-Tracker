@@ -134,7 +134,24 @@ export default function App() {
     }
   }
 
-  async function handleEditLead(id) {
+  async function handleEditLead(id, quickPatch) {
+    if (quickPatch && typeof quickPatch === 'object') {
+      try {
+        setError('');
+        setMessage('');
+        const lead = await getLead(id);
+        const merged = { ...lead, ...quickPatch };
+        await updateLead(id, merged);
+        const data = await loadLeads();
+        await syncCsvSnapshot(data);
+        setMessage('Follow-up updated.');
+      } catch (loadError) {
+        console.error(loadError);
+        setError('Could not update follow-up.');
+      }
+      return;
+    }
+
     try {
       const lead = await getLead(id);
       setForm(toFormState(lead));

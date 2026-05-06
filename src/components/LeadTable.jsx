@@ -2,6 +2,10 @@ import { formatDate, getStatus, titleCase } from '../utils/date';
 
 function statusClasses(status) {
   switch (status) {
+    case 'note':
+      return 'bg-amber-50 text-amber-700';
+    case 'done':
+      return 'bg-emerald-100 text-emerald-800';
     case 'today':
       return 'bg-emerald-50 text-emerald-700';
     case 'upcoming':
@@ -41,7 +45,7 @@ export default function LeadTable({ leads, onEditLead }) {
           <table className="min-w-full">
             <thead>
               <tr className="border-b border-slate-100">
-                {['Partner / Entity', 'Lifecycle', 'Priority', 'Follow Up', 'Activity', 'Created'].map((header) => (
+                {['Partner / Entity', 'Lifecycle', 'Priority', 'Follow Up', 'Activity', 'Created', 'Actions'].map((header) => (
                   <th key={header} className="px-3 py-4 text-left text-[11px] font-bold uppercase tracking-[0.18em] text-slate-400">
                     {header}
                   </th>
@@ -50,10 +54,10 @@ export default function LeadTable({ leads, onEditLead }) {
             </thead>
             <tbody>
               {leads.map((lead) => {
-                const status = getStatus(lead.followUpDate) || 'none';
+                const status = lead.isDone ? 'done' : lead.note ? 'note' : getStatus(lead.followUpDate) || 'none';
                 return (
                   <tr
-                    className="cursor-pointer border-b border-slate-100 transition hover:bg-slate-50"
+                    className={`cursor-pointer border-b border-slate-100 transition hover:bg-slate-50 ${lead.note ? 'bg-amber-50/40' : ''}`}
                     key={lead.id}
                     onClick={() => onEditLead(lead.id)}
                   >
@@ -79,10 +83,49 @@ export default function LeadTable({ leads, onEditLead }) {
                     <td className="px-3 py-4 text-sm text-slate-600">{formatDate(lead.followUpDate)}</td>
                     <td className="px-3 py-4">
                       <span className={`rounded-full px-3 py-1 text-xs font-semibold ${statusClasses(status)}`}>
-                        {lead.followUpDate ? titleCase(status) : 'No date'}
+                        {status === 'note'
+                          ? 'Note Added'
+                          : status === 'done'
+                            ? 'Done'
+                            : lead.followUpDate
+                              ? titleCase(status)
+                              : 'No date'}
                       </span>
                     </td>
                     <td className="px-3 py-4 text-sm text-slate-600">{lead.createdDate}</td>
+                    <td className="px-3 py-4">
+                      <div className="flex items-center gap-2">
+                        <button
+                          className="rounded-lg border border-amber-200 bg-amber-50 px-2.5 py-1 text-xs font-semibold text-amber-700 transition hover:bg-amber-100"
+                          onClick={(event) => {
+                            event.stopPropagation();
+                            const note = window.prompt('Add note for this follow-up:', lead.note || '');
+                            if (note === null) return;
+                            onEditLead(lead.id, {
+                              note: note.trim(),
+                              followUpDate: null,
+                              isDone: false,
+                            });
+                          }}
+                          type="button"
+                        >
+                          Add Note
+                        </button>
+                        <button
+                          className="rounded-lg border border-emerald-200 bg-emerald-50 px-2.5 py-1 text-xs font-semibold text-emerald-700 transition hover:bg-emerald-100"
+                          onClick={(event) => {
+                            event.stopPropagation();
+                            onEditLead(lead.id, {
+                              isDone: true,
+                              followUpDate: null,
+                            });
+                          }}
+                          type="button"
+                        >
+                          Done
+                        </button>
+                      </div>
+                    </td>
                   </tr>
                 );
               })}

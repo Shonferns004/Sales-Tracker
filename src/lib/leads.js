@@ -62,6 +62,8 @@ function fromRow(row) {
     phone: row.phone,
     stage: normalizeStage(row.stage),
     priority: normalizePriority(row.priority),
+    note: row.note ?? null,
+    isDone: Boolean(row.is_done),
     followUpDate: row.follow_up_date,
     createdDate: row.created_date,
     insertedAt: row.inserted_at,
@@ -70,12 +72,18 @@ function fromRow(row) {
 }
 
 function toRow(input) {
+  const note = normalizeText(input.note);
+  const isDone = Boolean(input.isDone);
+  const followUpDate = note || isDone ? null : normalizeDate(input.followUpDate);
+
   return {
     name: normalizeText(input.name) ?? '',
     phone: normalizePhoneForDb(input.phone),
     stage: normalizeStage(input.stage),
     priority: normalizePriority(input.priority),
-    follow_up_date: normalizeDate(input.followUpDate),
+    note,
+    is_done: isDone,
+    follow_up_date: followUpDate,
     created_date: normalizeDate(input.createdDate) ?? today(),
   };
 }
