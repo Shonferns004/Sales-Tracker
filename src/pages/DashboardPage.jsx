@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { ArrowUpRight, Sparkles } from 'lucide-react';
+import { ArrowUpRight, ChevronLeft, ChevronRight, Sparkles } from 'lucide-react';
 import SkeletonDashboard from '../components/SkeletonDashboard';
 import { StatsCards } from '../components/StatsCards';
 import FilterPanel from '../components/FilterPanel';
@@ -20,27 +20,31 @@ export default function DashboardPage(props) {
     setPriorityFilter,
     onResetFilters,
     onEditLead,
+    onOpenNotes,
+    onDeleteLead,
+    page,
+    pageSize,
+    totalCount,
+    onPageChange,
   } = props;
 
   const filtered = useMemo(() => {
     return leads.filter((item) => {
-      const query = search.trim().toLowerCase();
-      if (query && !`${item.name} ${item.phone}`.toLowerCase().includes(query)) return false;
       if (followFilter && getStatus(item.followUpDate) !== followFilter) return false;
       if (stageFilter && item.stage !== stageFilter) return false;
       if (priorityFilter && item.priority !== priorityFilter) return false;
       return true;
     });
-  }, [followFilter, leads, priorityFilter, search, stageFilter]);
+  }, [followFilter, leads, priorityFilter, stageFilter]);
 
   const stats = useMemo(
     () => ({
-      total: leads.length,
+      total: totalCount,
       today: leads.filter((lead) => getStatus(lead.followUpDate) === 'today').length,
       overdue: leads.filter((lead) => getStatus(lead.followUpDate) === 'overdue').length,
       high: leads.filter((lead) => lead.priority === 'high').length,
     }),
-    [leads]
+    [leads, totalCount]
   );
 
   if (loading) {
@@ -93,7 +97,42 @@ export default function DashboardPage(props) {
         stageFilter={stageFilter}
       />
 
-      <LeadTable leads={filtered} onEditLead={onEditLead} />
+      <LeadTable leads={filtered} onEditLead={onEditLead} onOpenNotes={onOpenNotes} onDeleteLead={onDeleteLead} />
+
+      {totalCount > pageSize && !search ? (
+        <div className="flex items-center justify-between rounded-[28px] border border-slate-200 bg-white px-5 py-4 shadow-sm">
+          <p className="text-sm text-slate-500">
+            Showing <span className="font-semibold text-slate-700">{Math.min((page - 1) * pageSize + 1, totalCount)}</span>
+            {' '}&ndash;{' '}
+            <span className="font-semibold text-slate-700">{Math.min(page * pageSize, totalCount)}</span>
+            {' '}of{' '}
+            <span className="font-semibold text-slate-700">{totalCount}</span> leads
+          </p>
+          <div className="flex items-center gap-2">
+            <button
+              className="inline-flex h-10 items-center justify-center gap-1.5 rounded-xl border border-slate-200 bg-white px-4 text-sm font-semibold text-slate-600 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40"
+              disabled={page <= 1}
+              onClick={() => onPageChange(page - 1)}
+              type="button"
+            >
+              <ChevronLeft className="h-4 w-4" />
+              Previous
+            </button>
+            <span className="rounded-lg bg-slate-100 px-3 py-1.5 text-xs font-semibold text-slate-600">
+              Page {page} of {Math.ceil(totalCount / pageSize)}
+            </span>
+            <button
+              className="inline-flex h-10 items-center justify-center gap-1.5 rounded-xl border border-slate-200 bg-white px-4 text-sm font-semibold text-slate-600 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40"
+              disabled={page >= Math.ceil(totalCount / pageSize)}
+              onClick={() => onPageChange(page + 1)}
+              type="button"
+            >
+              Next
+              <ChevronRight className="h-4 w-4" />
+            </button>
+          </div>
+        </div>
+      ) : null}
     </div>
   );
 }

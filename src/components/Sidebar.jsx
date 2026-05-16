@@ -26,8 +26,8 @@ export default function Sidebar({ activeView, onNavigate, notificationsEnabled, 
               SF
             </div>
             <div>
-              <p className="text-xl font-bold tracking-tight text-slate-900">Elite CRM</p>
-              <p className="text-[11px] uppercase tracking-[0.18em] text-slate-400">Enterprise</p>
+             <p className="text-xl font-bold tracking-tight text-slate-900">Traction</p>
+               <p className="text-[11px] uppercase tracking-[0.18em] text-slate-400">Lead Manager</p>
             </div>
           </div>
           <button

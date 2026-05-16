@@ -1,4 +1,4 @@
-import { Download, Menu, Search } from 'lucide-react';
+import { Download, Menu, Moon, Search, Sun } from 'lucide-react';
 
 export default function Topbar({
   title = 'Lead Management',
@@ -6,6 +6,8 @@ export default function Topbar({
   actionLabel = 'Quick Action',
   onToggleSidebar,
   downloadUrl,
+  theme,
+  onToggleTheme,
 }) {
   return (
     <header className="sticky top-0 z-30 mb-6 flex flex-col gap-4 rounded-2xl border border-slate-200 bg-white/90 px-4 py-4 backdrop-blur md:flex-row md:items-center md:justify-between md:px-6">
@@ -28,6 +30,14 @@ export default function Topbar({
       </div>
 
       <div className="flex flex-wrap items-center gap-3 md:justify-end">
+        <button
+          className="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-700 transition hover:bg-slate-50"
+          onClick={onToggleTheme}
+          title={theme === 'dark' ? 'Light mode' : 'Dark mode'}
+          type="button"
+        >
+          {theme === 'dark' ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+        </button>
         <a
           className="inline-flex h-10 items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-4 text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
           href={downloadUrl}

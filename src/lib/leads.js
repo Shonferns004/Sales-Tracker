@@ -63,6 +63,7 @@ function fromRow(row) {
     stage: normalizeStage(row.stage),
     priority: normalizePriority(row.priority),
     note: row.note ?? null,
+    notes: row.notes ?? [],
     isDone: Boolean(row.is_done),
     followUpDate: row.follow_up_date,
     createdDate: row.created_date,
@@ -82,23 +83,40 @@ function toRow(input) {
     stage: normalizeStage(input.stage),
     priority: normalizePriority(input.priority),
     note,
+    notes: Array.isArray(input.notes) ? input.notes : [],
     is_done: isDone,
     follow_up_date: followUpDate,
     created_date: normalizeDate(input.createdDate) ?? today(),
   };
 }
 
-export async function listLeads() {
+export async function listLeads(limit, offset, search) {
   assertSupabaseConfig();
 
-  const { data, error } = await supabase
+  let query = supabase
     .from('leads')
     .select('*')
     .order('created_date', { ascending: false })
     .order('inserted_at', { ascending: false });
 
+  if (search) query = query.ilike('name', `%${search}%`);
+  if (typeof limit === 'number') query = query.range(offset || 0, offset + limit - 1);
+
+  const { data, error } = await query;
+
   if (error) throw error;
   return data.map(fromRow);
+}
+
+export async function countLeads(search) {
+  assertSupabaseConfig();
+
+  let query = supabase.from('leads').select('*', { count: 'exact', head: true });
+  if (search) query = query.ilike('name', `%${search}%`);
+
+  const { count, error } = await query;
+  if (error) throw error;
+  return count ?? 0;
 }
 
 export async function getLead(id) {
@@ -120,6 +138,20 @@ export async function updateLead(id, input) {
   assertSupabaseConfig();
 
   const { error } = await supabase.from('leads').update(toRow(input)).eq('id', id);
+  if (error) throw error;
+}
+
+export async function deleteLead(id) {
+  assertSupabaseConfig();
+
+  const { error } = await supabase.from('leads').delete().eq('id', id);
+  if (error) throw error;
+}
+
+export async function updateLeadNotes(id, notes) {
+  assertSupabaseConfig();
+
+  const { error } = await supabase.from('leads').update({ notes }).eq('id', id);
   if (error) throw error;
 }
 

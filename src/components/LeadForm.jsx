@@ -7,7 +7,7 @@ const priorityLabel = {
   high: 'High',
 };
 
-export default function LeadForm({ title, subtitle, form, saving, onChange, onSubmit, onCancel }) {
+export default function LeadForm({ title, subtitle, form, saving, onChange, onSubmit, onCancel, onOpenBulkAdd }) {
   return (
     <div className="mx-auto w-full max-w-6xl space-y-6">
       <section className="overflow-hidden rounded-[28px] bg-gradient-to-r from-slate-900 via-slate-800 to-slate-700 shadow-xl shadow-slate-200">
@@ -146,13 +146,24 @@ export default function LeadForm({ title, subtitle, form, saving, onChange, onSu
           </div>
 
           <div className="flex flex-col gap-4 border-t border-slate-100 pt-5 md:flex-row md:items-center md:justify-between">
-            <button
-              className="inline-flex h-11 items-center justify-center rounded-xl border border-slate-200 bg-white px-5 text-sm font-semibold text-slate-600 transition hover:bg-slate-50"
-              onClick={onCancel}
-              type="button"
-            >
-              Discard
-            </button>
+            <div className="flex items-center gap-3">
+              <button
+                className="inline-flex h-11 items-center justify-center rounded-xl border border-slate-200 bg-white px-5 text-sm font-semibold text-slate-600 transition hover:bg-slate-50"
+                onClick={onCancel}
+                type="button"
+              >
+                Discard
+              </button>
+              {onOpenBulkAdd && (
+                <button
+                  className="inline-flex h-11 items-center justify-center rounded-xl border border-slate-200 bg-white px-5 text-sm font-semibold text-slate-600 transition hover:bg-slate-50"
+                  onClick={onOpenBulkAdd}
+                  type="button"
+                >
+                  Bulk Add
+                </button>
+              )}
+            </div>
 
             <div className="flex flex-col items-start gap-3 md:flex-row md:items-center">
               <span className="text-[11px] font-bold uppercase tracking-[0.18em] text-slate-400">Progress Step 1 of 1</span>
@@ -167,7 +178,6 @@ export default function LeadForm({ title, subtitle, form, saving, onChange, onSu
           </div>
         </form>
       </section>
-
     </div>
   );
 }

@@ -1,3 +1,4 @@
+import { MessageSquareText } from 'lucide-react';
 import { formatDate, getStatus, titleCase } from '../utils/date';
 
 function statusClasses(status) {
@@ -28,7 +29,7 @@ function priorityClasses(priority) {
   }
 }
 
-export default function LeadTable({ leads, onEditLead }) {
+export default function LeadTable({ leads, onEditLead, onOpenNotes, onDeleteLead }) {
   return (
     <section className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
       <div className="mb-5">
@@ -54,10 +55,11 @@ export default function LeadTable({ leads, onEditLead }) {
             </thead>
             <tbody>
               {leads.map((lead) => {
-                const status = lead.isDone ? 'done' : lead.note ? 'note' : getStatus(lead.followUpDate) || 'none';
+                const notesCount = Array.isArray(lead.notes) ? lead.notes.length : 0;
+                const status = lead.isDone ? 'done' : notesCount > 0 ? 'note' : getStatus(lead.followUpDate) || 'none';
                 return (
                   <tr
-                    className={`cursor-pointer border-b border-slate-100 transition hover:bg-slate-50 ${lead.note ? 'bg-amber-50/40' : ''}`}
+                    className={`cursor-pointer border-b border-slate-100 transition hover:bg-slate-50 ${notesCount > 0 ? 'bg-amber-50/40' : ''}`}
                     key={lead.id}
                     onClick={() => onEditLead(lead.id)}
                   >
@@ -82,15 +84,23 @@ export default function LeadTable({ leads, onEditLead }) {
                     </td>
                     <td className="px-3 py-4 text-sm text-slate-600">{formatDate(lead.followUpDate)}</td>
                     <td className="px-3 py-4">
-                      <span className={`rounded-full px-3 py-1 text-xs font-semibold ${statusClasses(status)}`}>
-                        {status === 'note'
-                          ? 'Note Added'
-                          : status === 'done'
-                            ? 'Done'
-                            : lead.followUpDate
-                              ? titleCase(status)
-                              : 'No date'}
-                      </span>
+                      <div className="flex items-center gap-2">
+                        <span className={`rounded-full px-3 py-1 text-xs font-semibold ${statusClasses(status)}`}>
+                          {status === 'note'
+                            ? 'Note Added'
+                            : status === 'done'
+                              ? 'Done'
+                              : lead.followUpDate
+                                ? titleCase(status)
+                                : 'No date'}
+                        </span>
+                        {notesCount > 0 && (
+                          <span className="inline-flex items-center gap-1 rounded-full border border-amber-200 bg-amber-50 px-2 py-0.5 text-xs font-semibold text-amber-700">
+                            <MessageSquareText className="h-3 w-3" />
+                            {notesCount}
+                          </span>
+                        )}
+                      </div>
                     </td>
                     <td className="px-3 py-4 text-sm text-slate-600">{lead.createdDate}</td>
                     <td className="px-3 py-4">
@@ -99,13 +109,7 @@ export default function LeadTable({ leads, onEditLead }) {
                           className="rounded-lg border border-amber-200 bg-amber-50 px-2.5 py-1 text-xs font-semibold text-amber-700 transition hover:bg-amber-100"
                           onClick={(event) => {
                             event.stopPropagation();
-                            const note = window.prompt('Add note for this follow-up:', lead.note || '');
-                            if (note === null) return;
-                            onEditLead(lead.id, {
-                              note: note.trim(),
-                              followUpDate: null,
-                              isDone: false,
-                            });
+                            onOpenNotes(lead);
                           }}
                           type="button"
                         >
@@ -118,11 +122,22 @@ export default function LeadTable({ leads, onEditLead }) {
                             onEditLead(lead.id, {
                               isDone: true,
                               followUpDate: null,
+                              note: null,
                             });
                           }}
                           type="button"
                         >
                           Done
+                        </button>
+                        <button
+                          className="rounded-lg border border-rose-200 bg-rose-50 px-2.5 py-1 text-xs font-semibold text-rose-700 transition hover:bg-rose-100"
+                          onClick={(event) => {
+                            event.stopPropagation();
+                            onDeleteLead(lead);
+                          }}
+                          type="button"
+                        >
+                          Delete
                         </button>
                       </div>
                     </td>

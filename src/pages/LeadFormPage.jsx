@@ -1,6 +1,6 @@
 import LeadForm from '../components/LeadForm';
 
-export default function LeadFormPage({ mode, form, saving, onChange, onSubmit, onCancel }) {
+export default function LeadFormPage({ mode, form, saving, onChange, onSubmit, onCancel, onOpenBulkAdd }) {
   const isEdit = mode === 'edit';
 
   return (
@@ -16,6 +16,7 @@ export default function LeadFormPage({ mode, form, saving, onChange, onSubmit, o
       onChange={onChange}
       onSubmit={onSubmit}
       onCancel={onCancel}
+      onOpenBulkAdd={isEdit ? undefined : onOpenBulkAdd}
     />
   );
 }
