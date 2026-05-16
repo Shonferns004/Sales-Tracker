@@ -75,7 +75,7 @@ function fromRow(row) {
 function toRow(input) {
   const note = normalizeText(input.note);
   const isDone = Boolean(input.isDone);
-  const followUpDate = note || isDone ? null : normalizeDate(input.followUpDate);
+  const followUpDate = isDone ? null : normalizeDate(input.followUpDate);
 
   return {
     name: normalizeText(input.name) ?? '',

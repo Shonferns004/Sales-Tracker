@@ -37,7 +37,7 @@ export function toLeadInput(form) {
     note,
     notes: form.notes ?? [],
     isDone,
-    followUpDate: note || isDone ? null : form.followUpDate || null,
+    followUpDate: isDone ? null : form.followUpDate || null,
     createdDate: form.createdDate,
   };
 }
